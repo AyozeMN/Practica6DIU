@@ -1,25 +1,32 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.mycompany.practica6;
 
+import java.io.File;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import org.opencv.core.Core;
+import org.opencv.core.Mat;
+import org.opencv.imgcodecs.Imgcodecs;
 
 /**
  *
- * @author Ayoze
+ * @author Ayoze, Nicolás
  */
 public class Main extends javax.swing.JFrame {
 
-    /**
-     * Creates new form Main
-     */
+    JFileChooser fc = new JFileChooser();
+    FileNameExtensionFilter filtroAll = null;
+    FileNameExtensionFilter filtroJPEG = null;
+    FileNameExtensionFilter filtroPNG = null;
+    Mat img;
+    
     public Main() {
         initComponents();
+        
         nu.pattern.OpenCV.loadShared();
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+        
+        this.setLocationRelativeTo(null);
     }
 
     /**
@@ -31,38 +38,92 @@ public class Main extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        lienzo1 = new com.mycompany.practica6.Lienzo();
         jMenuBarImages = new javax.swing.JMenuBar();
         jMenuFiles = new javax.swing.JMenu();
         jMenuItemOpen = new javax.swing.JMenuItem();
         jMenuItemSave = new javax.swing.JMenuItem();
-        jSeparatorFiles = new javax.swing.JPopupMenu.Separator();
         jMenuItemClose = new javax.swing.JMenuItem();
+        jSeparatorFiles = new javax.swing.JPopupMenu.Separator();
+        jMenuItemExit = new javax.swing.JMenuItem();
         jMenuEdit = new javax.swing.JMenu();
+        jMenuItemThreshold = new javax.swing.JMenuItem();
         jMenuHelp = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Threshold File Edit");
         setPreferredSize(new java.awt.Dimension(1280, 768));
 
+        lienzo1.setPreferredSize(new java.awt.Dimension(1240, 768));
+
+        javax.swing.GroupLayout lienzo1Layout = new javax.swing.GroupLayout(lienzo1);
+        lienzo1.setLayout(lienzo1Layout);
+        lienzo1Layout.setHorizontalGroup(
+            lienzo1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 1240, Short.MAX_VALUE)
+        );
+        lienzo1Layout.setVerticalGroup(
+            lienzo1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 768, Short.MAX_VALUE)
+        );
+
+        jMenuFiles.setMnemonic('F');
         jMenuFiles.setText("Files");
 
         jMenuItemOpen.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         jMenuItemOpen.setText("Open");
+        jMenuItemOpen.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemOpenActionPerformed(evt);
+            }
+        });
         jMenuFiles.add(jMenuItemOpen);
 
         jMenuItemSave.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         jMenuItemSave.setText("Save");
+        jMenuItemSave.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemSaveActionPerformed(evt);
+            }
+        });
         jMenuFiles.add(jMenuItemSave);
-        jMenuFiles.add(jSeparatorFiles);
 
         jMenuItemClose.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_X, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         jMenuItemClose.setText("Close");
+        jMenuItemClose.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemCloseActionPerformed(evt);
+            }
+        });
         jMenuFiles.add(jMenuItemClose);
+        jMenuFiles.add(jSeparatorFiles);
+
+        jMenuItemExit.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F4, java.awt.event.InputEvent.ALT_DOWN_MASK));
+        jMenuItemExit.setText("Exit");
+        jMenuItemExit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemExitActionPerformed(evt);
+            }
+        });
+        jMenuFiles.add(jMenuItemExit);
 
         jMenuBarImages.add(jMenuFiles);
 
+        jMenuEdit.setMnemonic('E');
         jMenuEdit.setText("Edit");
+
+        jMenuItemThreshold.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_U, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        jMenuItemThreshold.setText("Umbralizar");
+        jMenuItemThreshold.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemThresholdActionPerformed(evt);
+            }
+        });
+        jMenuEdit.add(jMenuItemThreshold);
+
         jMenuBarImages.add(jMenuEdit);
 
+        jMenuHelp.setMnemonic('H');
         jMenuHelp.setText("Help");
         jMenuBarImages.add(jMenuHelp);
 
@@ -72,15 +133,106 @@ public class Main extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(lienzo1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 279, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(lienzo1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jMenuItemOpenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemOpenActionPerformed
+        filtroAll = new FileNameExtensionFilter("Common Images File Formats (*.png, *.jpg, *.jpeg)", "png", "jpg", "jpeg");
+        fc.addChoosableFileFilter(filtroAll);
+        
+        filtroPNG = new FileNameExtensionFilter("PNG Images File Format (*.png)", "png");
+        fc.addChoosableFileFilter(filtroPNG);
+        
+        filtroJPEG = new FileNameExtensionFilter("JPEG Images File Formats (*.jpg, *.jpeg)", "jpg", "jpeg");
+        fc.addChoosableFileFilter(filtroJPEG);
+        
+        int res = fc.showOpenDialog(null);
+        //System.out.println(res);
+        if (res == JFileChooser.APPROVE_OPTION) {
+            File fichero = fc.getSelectedFile();
+            //Open img(Path)
+            img = Imgcodecs.imread(fichero.getAbsolutePath());
+            lienzo1.setMat(img);
+        }
+        if (res == JFileChooser.CANCEL_OPTION) {
+            JOptionPane.showMessageDialog(rootPane, "Please select a valid File", "File NOT selected", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_jMenuItemOpenActionPerformed
+
+    private void jMenuItemSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemSaveActionPerformed
+        filtroAll = new FileNameExtensionFilter("Common Images File Formats (*.png, *.jpg, *.jpeg)", "png", "jpg", "jpeg");
+        fc.addChoosableFileFilter(filtroAll);
+        
+        filtroPNG = new FileNameExtensionFilter("PNG Images File Format (*.png)", "png");
+        fc.addChoosableFileFilter(filtroPNG);
+        
+        filtroJPEG = new FileNameExtensionFilter("JPEG Images File Formats (*.jpg, *.jpeg)", "jpg", "jpeg");
+        fc.addChoosableFileFilter(filtroJPEG);
+        
+        int res = fc.showSaveDialog(null);
+        if (res == JFileChooser.APPROVE_OPTION) {
+            System.out.println("Save");
+            
+            File fichero = fc.getSelectedFile();
+            System.out.println("F: " + fichero.getAbsolutePath());
+            
+            int res2 = JOptionPane.showConfirmDialog(rootPane, "Do you want to save the file " + fichero.getName(), "Save file", JOptionPane.YES_NO_OPTION);
+            
+            if (res2 == JOptionPane.YES_OPTION) {
+                //Save img (Path, Mat)
+                Imgcodecs.imwrite(fichero.getAbsolutePath(), Imgcodecs.imread(fichero.getAbsolutePath()));
+                JOptionPane.showMessageDialog(rootPane, "The file " + fichero.getName() + " has been saved", "File saved", JOptionPane.INFORMATION_MESSAGE);
+            }
+            
+            if (res2 == JOptionPane.NO_OPTION) {
+                JOptionPane.showMessageDialog(rootPane, "The file " + fichero.getName() + " has NOT been saved", "File NOT saved", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+        if (res == JFileChooser.CANCEL_OPTION) {
+            System.out.println("Cancel");
+        }
+    }//GEN-LAST:event_jMenuItemSaveActionPerformed
+
+    private void jMenuItemCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemCloseActionPerformed
+        int res3 = JOptionPane.showConfirmDialog(rootPane, "Do you want to close the current file", "Close file", JOptionPane.YES_NO_OPTION);
+        
+        if (res3 == JOptionPane.YES_OPTION) {
+            Mat imgnull = null;
+            lienzo1.setMat(imgnull);
+        }
+    }//GEN-LAST:event_jMenuItemCloseActionPerformed
+
+    private void jMenuItemExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemExitActionPerformed
+        int res4 = JOptionPane.showConfirmDialog(rootPane, "Do you want to exit the application", "Exit program", JOptionPane.YES_NO_OPTION);
+        
+        if (res4 == JOptionPane.YES_OPTION) {
+            System.exit(0);
+        }
+    }//GEN-LAST:event_jMenuItemExitActionPerformed
+
+    private void jMenuItemThresholdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemThresholdActionPerformed
+        String umbral = JOptionPane.showInputDialog(rootPane, "Introduce the Thresholding Factor", "Thresholding Factor", JOptionPane.INFORMATION_MESSAGE);
+        try {
+            Integer res5 = Integer.parseInt(umbral);
+            lienzo1.setUmbral(res5);
+            lienzo1.callUmbralizar(img, NORMAL);
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(rootPane, "Number formar Error, please introduce a real number", "Number Format Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_jMenuItemThresholdActionPerformed
 
     /**
      * @param args the command line arguments
@@ -123,8 +275,11 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JMenu jMenuFiles;
     private javax.swing.JMenu jMenuHelp;
     private javax.swing.JMenuItem jMenuItemClose;
+    private javax.swing.JMenuItem jMenuItemExit;
     private javax.swing.JMenuItem jMenuItemOpen;
     private javax.swing.JMenuItem jMenuItemSave;
+    private javax.swing.JMenuItem jMenuItemThreshold;
     private javax.swing.JPopupMenu.Separator jSeparatorFiles;
+    private com.mycompany.practica6.Lienzo lienzo1;
     // End of variables declaration//GEN-END:variables
 }
