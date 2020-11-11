@@ -17,32 +17,34 @@ import org.opencv.imgproc.Imgproc;
  * @author Ayoze, Nicolás
  */
 public class Lienzo extends JPanel {
-    private Mat img = null;
-    private Integer umbral = 0;
-    BufferedImage imgBI = null;
-
-    public Lienzo() {
-        
-    }
+    protected Mat imgOrigen = null;
+    protected Mat imgClon = null;
+    protected BufferedImage imgBI = null;
     
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        g.drawImage(imgBI, 0, 0, null);
+        if (imgBI != null) {
+            g.drawImage(imgBI, 0, 0, null);
+        }
     }
     
     public void setMat(Mat imagenRead) {
-        this.img = imagenRead;
-        imgBI = (BufferedImage) HighGui.toBufferedImage(imagenRead);
+        if (imagenRead != null) {
+            imgOrigen = imagenRead;
+            imgBI = (BufferedImage) HighGui.toBufferedImage(imagenRead);
+        } else {
+            imgOrigen = null;
+            imgBI = null;
+        }
+        
         this.repaint();
     }
     
-    public void setUmbral(Integer umbralRead) {
-        this.umbral = umbralRead;
-    }
-    
-    public void callUmbralizar(Mat img, Integer umbral) {
-        imgBI = (BufferedImage) HighGui.toBufferedImage(umbralizar(img, umbral));
+    public void callUmbralizar(Integer umbral) {
+        imgClon = (umbralizar(imgOrigen, umbral));
+        imgBI = (BufferedImage) HighGui.toBufferedImage(imgClon);
+        
         this.repaint();
     }
     

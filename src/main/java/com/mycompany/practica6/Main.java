@@ -1,5 +1,6 @@
 package com.mycompany.practica6;
 
+import com.sun.xml.internal.ws.util.StringUtils;
 import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -49,18 +50,20 @@ public class Main extends javax.swing.JFrame {
         jMenuEdit = new javax.swing.JMenu();
         jMenuItemThreshold = new javax.swing.JMenuItem();
         jMenuHelp = new javax.swing.JMenu();
+        jMenuItemInfo = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Threshold File Edit");
-        setPreferredSize(new java.awt.Dimension(1280, 768));
+        setTitle("Threshold File Edit (Made By: Ayoze Mesa Núñez & Nicolás Rey Alonso)");
+        setResizable(false);
 
-        lienzo1.setPreferredSize(new java.awt.Dimension(1240, 768));
+        lienzo1.setMaximumSize(new java.awt.Dimension(1024, 768));
+        lienzo1.setPreferredSize(new java.awt.Dimension(1024, 768));
 
         javax.swing.GroupLayout lienzo1Layout = new javax.swing.GroupLayout(lienzo1);
         lienzo1.setLayout(lienzo1Layout);
         lienzo1Layout.setHorizontalGroup(
             lienzo1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1240, Short.MAX_VALUE)
+            .addGap(0, 1024, Short.MAX_VALUE)
         );
         lienzo1Layout.setVerticalGroup(
             lienzo1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -112,8 +115,8 @@ public class Main extends javax.swing.JFrame {
         jMenuEdit.setMnemonic('E');
         jMenuEdit.setText("Edit");
 
-        jMenuItemThreshold.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_U, java.awt.event.InputEvent.CTRL_DOWN_MASK));
-        jMenuItemThreshold.setText("Umbralizar");
+        jMenuItemThreshold.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_T, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        jMenuItemThreshold.setText("Threshold");
         jMenuItemThreshold.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItemThresholdActionPerformed(evt);
@@ -125,6 +128,16 @@ public class Main extends javax.swing.JFrame {
 
         jMenuHelp.setMnemonic('H');
         jMenuHelp.setText("Help");
+
+        jMenuItemInfo.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_H, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        jMenuItemInfo.setText("How it works");
+        jMenuItemInfo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemInfoActionPerformed(evt);
+            }
+        });
+        jMenuHelp.add(jMenuItemInfo);
+
         jMenuBarImages.add(jMenuHelp);
 
         setJMenuBar(jMenuBarImages);
@@ -133,23 +146,23 @@ public class Main extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(lienzo1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(0, 0, 0)
+                .addComponent(lienzo1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(lienzo1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(lienzo1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void jMenuItemOpenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemOpenActionPerformed
+        fc.removeChoosableFileFilter(fc.getAcceptAllFileFilter());
+        
         filtroAll = new FileNameExtensionFilter("Common Images File Formats (*.png, *.jpg, *.jpeg)", "png", "jpg", "jpeg");
         fc.addChoosableFileFilter(filtroAll);
         
@@ -160,10 +173,10 @@ public class Main extends javax.swing.JFrame {
         fc.addChoosableFileFilter(filtroJPEG);
         
         int res = fc.showOpenDialog(null);
-        //System.out.println(res);
+        
         if (res == JFileChooser.APPROVE_OPTION) {
             File fichero = fc.getSelectedFile();
-            //Open img(Path)
+            
             img = Imgcodecs.imread(fichero.getAbsolutePath());
             lienzo1.setMat(img);
         }
@@ -183,26 +196,24 @@ public class Main extends javax.swing.JFrame {
         fc.addChoosableFileFilter(filtroJPEG);
         
         int res = fc.showSaveDialog(null);
+        
         if (res == JFileChooser.APPROVE_OPTION) {
-            System.out.println("Save");
-            
             File fichero = fc.getSelectedFile();
-            System.out.println("F: " + fichero.getAbsolutePath());
             
             int res2 = JOptionPane.showConfirmDialog(rootPane, "Do you want to save the file " + fichero.getName(), "Save file", JOptionPane.YES_NO_OPTION);
             
             if (res2 == JOptionPane.YES_OPTION) {
                 //Save img (Path, Mat)
-                Imgcodecs.imwrite(fichero.getAbsolutePath(), Imgcodecs.imread(fichero.getAbsolutePath()));
+                Imgcodecs.imwrite(fichero.getAbsolutePath(), lienzo1.imgClon);
+                
                 JOptionPane.showMessageDialog(rootPane, "The file " + fichero.getName() + " has been saved", "File saved", JOptionPane.INFORMATION_MESSAGE);
             }
-            
             if (res2 == JOptionPane.NO_OPTION) {
                 JOptionPane.showMessageDialog(rootPane, "The file " + fichero.getName() + " has NOT been saved", "File NOT saved", JOptionPane.ERROR_MESSAGE);
             }
         }
         if (res == JFileChooser.CANCEL_OPTION) {
-            System.out.println("Cancel");
+            JOptionPane.showMessageDialog(rootPane, "Please select a valid File", "File NOT saved", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_jMenuItemSaveActionPerformed
 
@@ -210,8 +221,7 @@ public class Main extends javax.swing.JFrame {
         int res3 = JOptionPane.showConfirmDialog(rootPane, "Do you want to close the current file", "Close file", JOptionPane.YES_NO_OPTION);
         
         if (res3 == JOptionPane.YES_OPTION) {
-            Mat imgnull = null;
-            lienzo1.setMat(imgnull);
+            lienzo1.setMat(null);
         }
     }//GEN-LAST:event_jMenuItemCloseActionPerformed
 
@@ -227,12 +237,24 @@ public class Main extends javax.swing.JFrame {
         String umbral = JOptionPane.showInputDialog(rootPane, "Introduce the Thresholding Factor", "Thresholding Factor", JOptionPane.INFORMATION_MESSAGE);
         try {
             Integer res5 = Integer.parseInt(umbral);
-            lienzo1.setUmbral(res5);
-            lienzo1.callUmbralizar(img, NORMAL);
+            lienzo1.callUmbralizar(res5);
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(rootPane, "Number formar Error, please introduce a real number", "Number Format Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_jMenuItemThresholdActionPerformed
+
+    private void jMenuItemInfoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemInfoActionPerformed
+        JOptionPane.showMessageDialog(rootPane, 
+                "· Welcome to the Threshold Application"
+                        + "\n \t - Use the Menu Item 'File' (Alt+F) to: "
+                        + "\n \t \t + Open an Image File (Ctrl+O)"
+                        + "\n \t \t + Save the current Image to a File (Ctrl+S)"
+                        + "\n \t \t + Close the current Image File (Ctrl+X)"
+                        + "\n \t - Use the Menu Item 'Edit' (Alt+E) to: "
+                        + "\n \t \t + Modify the Image File inputting the Threshold value (Ctrl+T)"
+                        + "\n \t * Search for help in the Menu Item 'Help' (Alt+H) to receive functional information",
+                "Info Window", JOptionPane.INFORMATION_MESSAGE);
+    }//GEN-LAST:event_jMenuItemInfoActionPerformed
 
     /**
      * @param args the command line arguments
@@ -276,6 +298,7 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JMenu jMenuHelp;
     private javax.swing.JMenuItem jMenuItemClose;
     private javax.swing.JMenuItem jMenuItemExit;
+    private javax.swing.JMenuItem jMenuItemInfo;
     private javax.swing.JMenuItem jMenuItemOpen;
     private javax.swing.JMenuItem jMenuItemSave;
     private javax.swing.JMenuItem jMenuItemThreshold;
